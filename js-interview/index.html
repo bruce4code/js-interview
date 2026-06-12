@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS Interview Knowledge Base</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
+<style>
+  /* ── Reset ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --border: #e4e4e7;
+    --text: #18181b;
+    --text-secondary: #71717a;
+    --accent: #ff6b35;
+    --accent-hover: #e85d2c;
+    --sidebar-bg: #f4f4f5;
+    --code-bg: #1e1e2e;
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  body.dark {
+    --bg: #18181b;
+    --surface: #27272a;
+    --border: #3f3f46;
+    --text: #fafafa;
+    --text-secondary: #a1a1aa;
+    --sidebar-bg: #1f1f23;
+    --shadow: 0 1px 3px rgba(0,0,0,.3);
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background .2s, color .2s;
+    min-height: 100vh;
+  }
+
+  /* ── Layout ── */
+  .app { display: flex; height: 100vh; }
+  .sidebar {
+    width: 300px; flex-shrink: 0;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .main {
+    flex: 1; display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar-header {
+    padding: 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-header h1 { font-size: 18px; font-weight: 700; }
+  .sidebar-header svg { width: 24px; height: 24px; color: var(--accent); }
+
+  .sidebar-tabs {
+    display: flex; gap: 0; padding: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-tabs .tab {
+    flex: 1; padding: 6px 0; text-align: center; cursor: pointer;
+    font-size: 12px; border-radius: 4px; transition: all .15s;
+    color: var(--text-secondary); border: none; background: none;
+  }
+  .sidebar-tabs .tab.active {
+    background: var(--accent); color: #fff; font-weight: 600;
+  }
+  .sidebar-tabs .tab:hover:not(.active) { background: var(--border); }
+
+  .article-list {
+    flex: 1; overflow-y: auto; padding: 8px;
+  }
+  .article-item {
+    display: block; padding: 10px 12px; border-radius: 6px;
+    cursor: pointer; transition: all .15s;
+    border: none; background: none; width: 100%; text-align: left;
+    color: var(--text); font-size: 13px; line-height: 1.4;
+  }
+  .article-item:hover { background: var(--border); }
+  .article-item.active {
+    background: var(--accent); color: #fff;
+  }
+  .article-item .sub {
+    font-size: 11px; color: var(--text-secondary); margin-top: 2px;
+  }
+  .article-item.active .sub { color: rgba(255,255,255,.7); }
+
+  .category-label {
+    padding: 6px 12px 2px; font-size: 11px; font-weight: 700;
+    color: var(--text-secondary); text-transform: uppercase;
+    letter-spacing: .5px; margin-top: 4px;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 24px; border-bottom: 1px solid var(--border);
+    background: var(--surface); flex-shrink: 0;
+  }
+  .topbar .breadcrumb {
+    font-size: 13px; color: var(--text-secondary);
+  }
+  .topbar .breadcrumb span { color: var(--text); font-weight: 600; }
+
+  .top-actions {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  /* ── Toggle Switch ── */
+  .toggle-wrap {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--text-secondary);
+  }
+  .toggle-switch {
+    position: relative; display: inline-block;
+    width: 48px; height: 24px; cursor: pointer;
+  }
+  .toggle-switch input { display: none; }
+  .toggle-slider {
+    position: absolute; inset: 0;
+    background: var(--border); border-radius: 12px;
+    transition: .25s;
+  }
+  .toggle-slider::before {
+    content: '中'; position: absolute; left: 3px; top: 3px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; display: flex; align-items: center;
+    justify-content: center; font-size: 10px; font-weight: 700;
+    transition: .25s; color: var(--text);
+    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+  }
+  .toggle-switch input:checked + .toggle-slider {
+    background: var(--accent);
+  }
+  .toggle-switch input:checked + .toggle-slider::before {
+    content: 'EN'; transform: translateX(24px); color: var(--accent);
+  }
+
+  /* Dark mode btn */
+  .dark-btn {
+    background: none; border: 1px solid var(--border); cursor: pointer;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-secondary); transition: all .15s; font-size: 16px;
+  }
+  .dark-btn:hover { background: var(--border); }
+
+  /* ── Content ── */
+  .content-area {
+    flex: 1; overflow-y: auto; padding: 32px 40px;
+    max-width: 860px; width: 100%; margin: 0 auto;
+  }
+
+  /* ── Markdown styling ── */
+  .markdown-body { line-height: 1.7; font-size: 15px; }
+  .markdown-body h2 {
+    font-size: 22px; font-weight: 700; margin: 28px 0 12px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  .markdown-body h3 {
+    font-size: 18px; font-weight: 600; margin: 24px 0 10px;
+  }
+  .markdown-body h4 {
+    font-size: 15px; font-weight: 600; margin: 20px 0 8px;
+  }
+  .markdown-body p { margin-bottom: 14px; color: var(--text); }
+  .markdown-body a { color: var(--accent); text-decoration: underline; }
+  .markdown-body a:hover { color: var(--accent-hover); }
+  .markdown-body ul, .markdown-body ol { margin-bottom: 14px; padding-left: 22px; }
+  .markdown-body li { margin-bottom: 4px; }
+  .markdown-body blockquote {
+    border-left: 4px solid var(--accent);
+    padding: 8px 16px; margin: 16px 0;
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+    border-radius: 0 6px 6px 0;
+    color: var(--text-secondary); font-style: italic;
+  }
+  .markdown-body pre {
+    margin: 16px 0; border-radius: var(--radius); overflow: hidden;
+  }
+  .markdown-body pre code {
+    display: block; padding: 16px; overflow-x: auto;
+    font-size: 13px; font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+  .markdown-body :not(pre) > code {
+    background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+    padding: 2px 6px; border-radius: 4px; font-size: 13px;
+    color: var(--accent); font-family: 'JetBrains Mono', monospace;
+  }
+  .markdown-body table {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    font-size: 14px;
+  }
+  .markdown-body th, .markdown-body td {
+    border: 1px solid var(--border); padding: 8px 12px; text-align: left;
+  }
+  .markdown-body th {
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+    font-weight: 600;
+  }
+  .markdown-body hr { margin: 24px 0; border: none; border-top: 1px solid var(--border); }
+  .markdown-body img { max-width: 100%; border-radius: var(--radius); }
+
+  /* ── English description banner ── */
+  .en-banner {
+    background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--border));
+    border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.6;
+  }
+
+  /* ── Language visibility ── */
+  .lang-zh, .lang-en { display: none; }
+  html[data-lang="zh"] .lang-zh { display: revert; }
+  html[data-lang="en"] .lang-en { display: revert; }
+
+  /* ── Home page ── */
+  .home-hero { text-align: center; padding: 48px 0 32px; }
+  .home-hero h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+  .home-hero p { color: var(--text-secondary); font-size: 15px; }
+  .home-stats {
+    display: flex; gap: 24px; justify-content: center; margin-top: 16px;
+  }
+  .home-stats .stat { text-align: center; }
+  .home-stats .stat-num {
+    font-size: 24px; font-weight: 700; color: var(--accent);
+  }
+  .home-stats .stat-label { font-size: 12px; color: var(--text-secondary); }
+
+  .home-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px; margin-top: 24px;
+  }
+  .cat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    cursor: pointer; transition: all .2s;
+    box-shadow: var(--shadow);
+  }
+  .cat-card:hover {
+    transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.1);
+    border-color: var(--accent);
+  }
+  .cat-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .cat-card .cat-en { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+  .cat-card .cat-count {
+    font-size: 12px; color: var(--accent); font-weight: 600;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .sidebar.show { display: flex; position: fixed; inset: 0; z-index: 100; width: 100%; }
+    .content-area { padding: 20px 16px; }
+    .topbar { padding: 10px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M9 12h6"/><path d="M12 9v6"/></svg>
+      <h1 data-i18n="site-title">JS Interview</h1>
+    </div>
+    <div class="sidebar-tabs">
+      <button class="tab active" onclick="switchTab('categories')" data-i18n="tab-categories">分类</button>
+      <button class="tab" onclick="switchTab('articles')" data-i18n="tab-articles">文章</button>
+    </div>
+    <div class="article-list" id="articleList"></div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="breadcrumb" id="breadcrumb">
+        <span data-i18n="home">首页</span>
+      </div>
+      <div class="top-actions">
+        <div class="toggle-wrap">
+          <span class="lang-zh">中</span>
+          <span class="lang-en">EN</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="langToggle" onchange="toggleLanguage()">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="lang-zh">EN</span>
+          <span class="lang-en">中</span>
+        </div>
+        <button class="dark-btn" onclick="toggleDark()" id="darkBtn" title="Toggle dark mode">🌙</button>
+        <button class="dark-btn" onclick="toggleSidebar()" id="menuBtn" style="display:none">☰</button>
+      </div>
+    </div>
+
+    <div class="content-area" id="content">
+      <div class="home-hero" id="homeHero">
+        <h1 class="lang-zh">JS 面试知识库</h1>
+        <h1 class="lang-en">JS Interview Knowledge Base</h1>
+        <p data-i18n="hero-desc">通过面试题来巩固 JavaScript 知识，共 37 道精选题目</p>
+        <div class="home-stats">
+          <div class="stat"><div class="stat-num">37</div><div class="stat-label" data-i18n="stat-articles">文章</div></div>
+          <div class="stat"><div class="stat-num">5</div><div class="stat-label" data-i18n="stat-categories">分类</div></div>
+        </div>
+      </div>
+      <div class="home-grid" id="homeGrid"></div>
+      <div class="markdown-body" id="articleContent" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<svg id="bookSvg" style="display:none"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 1 4 19.5z"/></svg>
+
+<script>
+// ── Data ──
+const ARTICLES = [
+  // JS 基础
+  { id:'01', zh:'作用域与变量提升', en:'Scope & Hoisting', cat:'01-js-basics', file:'01-js-basics/01-scope-hoisting.md' },
+  { id:'02', zh:'this 指向', en:'this Keyword', cat:'01-js-basics', file:'01-js-basics/02-this-keyword.md' },
+  { id:'03', zh:'箭头函数 vs 普通函数', en:'Arrow vs Regular Functions', cat:'01-js-basics', file:'01-js-basics/03-arrow-vs-regular.md' },
+  { id:'04', zh:'new 与 instanceof 实现原理', en:'new & instanceof', cat:'01-js-basics', file:'01-js-basics/04-new-instanceof.md' },
+  { id:'05', zh:'原型继承与 class 继承', en:'Prototype & Class Inheritance', cat:'01-js-basics', file:'01-js-basics/05-prototype-class-extends.md' },
+  { id:'06', zh:'typeof null 为什么是 object', en:'Why typeof null === "object"', cat:'01-js-basics', file:'01-js-basics/06-typeof-null.md' },
+  { id:'07', zh:'undefined == null 为 true？', en:'Why undefined == null is true', cat:'01-js-basics', file:'01-js-basics/07-undefined-null.md' },
+  { id:'08', zh:'typeof/indexOf 等原生 API 的缺点', en:'Limitations of typeof, indexOf', cat:'01-js-basics', file:'01-js-basics/08-typeof-indexof-limits.md' },
+  { id:'09', zh:'a==1&&a==2&&a==3 成立？', en:'How a==1&&a==2&&a==3 works', cat:'01-js-basics', file:'01-js-basics/09-loose-equal-trick.md' },
+  { id:'10', zh:'函数柯里化与重载', en:'Currying & Overloading', cat:'01-js-basics', file:'01-js-basics/10-curry-overload.md' },
+  // ES6+
+  { id:'11', zh:'解构赋值', en:'Destructuring', cat:'02-es6-plus', file:'02-es6-plus/01-destructuring.md' },
+  { id:'12', zh:'ES6 数组新增方法', en:'ES6 Array Methods', cat:'02-es6-plus', file:'02-es6-plus/02-es6-array-methods.md' },
+  // 手写实现
+  { id:'13', zh:'(5).add(3).minus(2)', en:'Number Prototype Extension', cat:'03-handwrite', file:'03-handwrite/01-number-prototype.md' },
+  { id:'14', zh:'setTimeout 模拟 setInterval', en:'setTimeout vs setInterval', cat:'03-handwrite', file:'03-handwrite/02-settimeout-interval.md' },
+  { id:'15', zh:'map(parseInt) + 实现 map/call', en:'map(parseInt) + Implement map & call', cat:'03-handwrite', file:'03-handwrite/03-map-parseint-call.md' },
+  { id:'16', zh:'call/apply/bind 实现', en:'Implement call/apply/bind', cat:'03-handwrite', file:'03-handwrite/04-call-apply-bind.md' },
+  { id:'17', zh:'bind 完整实现', en:'Full bind Implementation', cat:'03-handwrite', file:'03-handwrite/05-bind-implement.md' },
+  { id:'18', zh:'节流与防抖', en:'Throttle & Debounce', cat:'03-handwrite', file:'03-handwrite/06-throttle-debounce.md' },
+  { id:'19', zh:'Promise 简单实现', en:'Simple Promise Implementation', cat:'03-handwrite', file:'03-handwrite/07-promise.md' },
+  { id:'20', zh:'深拷贝', en:'Deep Clone', cat:'03-handwrite', file:'03-handwrite/08-deep-clone.md' },
+  { id:'21', zh:'倒计时', en:'Countdown', cat:'03-handwrite', file:'03-handwrite/09-countdown.md' },
+  { id:'22', zh:'Promise 封装 Ajax', en:'Promise-wrapped Ajax', cat:'03-handwrite', file:'03-handwrite/10-promise-ajax.md' },
+  { id:'23', zh:'Event Emit', en:'Event Emitter', cat:'03-handwrite', file:'03-handwrite/11-event-emitter.md' },
+  { id:'24', zh:'forEach 与 async/await', en:'forEach & async/await', cat:'03-handwrite', file:'03-handwrite/12-forEach-async-await.md' },
+  // 数组/对象
+  { id:'25', zh:'数组合并排序', en:'Array Merge & Sort', cat:'04-array-object', file:'04-array-object/01-array-merge-sort.md' },
+  { id:'26', zh:'push 的理解', en:'Understanding push', cat:'04-array-object', file:'04-array-object/02-push-understand.md' },
+  { id:'27', zh:'递归与尾递归', en:'Recursion & Tail Call', cat:'04-array-object', file:'04-array-object/03-recursion-tail-call.md' },
+  { id:'28', zh:'数组扁平化', en:'Array Flattening', cat:'04-array-object', file:'04-array-object/04-array-flatten.md' },
+  { id:'29', zh:'类数组转数组', en:'Array-like to Array', cat:'04-array-object', file:'04-array-object/05-arraylike-to-array.md' },
+  { id:'30', zh:'数组去重', en:'Array Deduplication', cat:'04-array-object', file:'04-array-object/06-array-unique.md' },
+  { id:'31', zh:'变量对调', en:'Swap Variables', cat:'04-array-object', file:'04-array-object/07-swap-variables.md' },
+  { id:'32', zh:'排序算法', en:'Sorting Algorithms', cat:'04-array-object', file:'04-array-object/08-sorting-algorithms.md' },
+  { id:'33', zh:'合并对象', en:'Object Merge', cat:'04-array-object', file:'04-array-object/09-object-merge.md' },
+  { id:'34', zh:'深浅拷贝方法', en:'Shallow & Deep Copy', cat:'04-array-object', file:'04-array-object/10-shallow-deep-copy.md' },
+  { id:'35', zh:'遍历方法', en:'Iteration Methods', cat:'04-array-object', file:'04-array-object/11-iteration-methods.md' },
+  // DOM/浏览器
+  { id:'36', zh:'事件捕获与冒泡', en:'Event Capture & Bubbling', cat:'05-dom-browser', file:'05-dom-browser/01-event-capture-bubble.md' },
+  { id:'37', zh:'Object.defineProperty', en:'Object.defineProperty', cat:'05-dom-browser', file:'05-dom-browser/02-define-property.md' },
+]
+
+const CATEGORIES = [
+  { id:'01-js-basics', zh:'JS 基础', en:'JS Fundamentals' },
+  { id:'02-es6-plus', zh:'ES6+ 语法', en:'ES6+ Syntax' },
+  { id:'03-handwrite', zh:'手写实现', en:'Handwriting' },
+  { id:'04-array-object', zh:'数组/对象操作', en:'Array & Object' },
+  { id:'05-dom-browser', zh:'DOM/浏览器', en:'DOM & Browser' },
+]
+
+let currentId = null
+let currentTab = 'categories'
+
+// ── Init ──
+window.addEventListener('DOMContentLoaded', () => {
+  const savedLang = localStorage.getItem('lang')
+  if (savedLang === 'en') {
+    document.getElementById('langToggle').checked = true
+    document.documentElement.setAttribute('data-lang', 'en')
+  }
+  const savedDark = localStorage.getItem('dark')
+  if (savedDark === 'true') {
+    document.body.classList.add('dark')
+  }
+  renderHome()
+  renderSidebar()
+
+  // Load article from hash
+  if (location.hash.startsWith('#/article/')) {
+    const id = location.hash.replace('#/article/', '')
+    loadArticle(id)
+  }
+})
+
+// ── Language ──
+function toggleLanguage() {
+  const lang = document.getElementById('langToggle').checked ? 'en' : 'zh'
+  document.documentElement.setAttribute('data-lang', lang)
+  localStorage.setItem('lang', lang)
+  renderSidebar()
+  if (currentId) loadArticle(currentId)
+  else renderHome()
+}
+
+// ── Dark mode ──
+function toggleDark() {
+  document.body.classList.toggle('dark')
+  localStorage.setItem('dark', document.body.classList.contains('dark'))
+}
+
+// ── Sidebar toggle (mobile) ──
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('show')
+}
+
+// ── Tab switching ──
+function switchTab(tab) {
+  currentTab = tab
+  document.querySelectorAll('.sidebar-tabs .tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && tab === 'categories') || (i === 1 && tab === 'articles'))
+  })
+  renderSidebar()
+}
+
+// ── Render sidebar list ──
+function renderSidebar() {
+  const el = document.getElementById('articleList')
+  const lang = document.documentElement.getAttribute('data-lang') || 'zh'
+
+  if (currentTab === 'articles') {
+    el.innerHTML = ARTICLES.map(a => `
+      <button class="article-item ${a.id === currentId ? 'active' : ''}" onclick="loadArticle('${a.id}')">
+        ${a.id}. ${lang === 'zh' ? a.zh : a.en}
+        <div class="sub">${lang === 'zh' ? CATEGORIES.find(c => c.id === a.cat)?.zh : CATEGORIES.find(c => c.id === a.cat)?.en}</div>
+      </button>
+    `).join('')
+    return
+  }
+
+  // Categories view
+  el.innerHTML = CATEGORIES.map(c => {
+    const arts = ARTICLES.filter(a => a.cat === c.id)
+    return `
+      <div class="category-label">${lang === 'zh' ? c.zh : c.en}</div>
+      ${arts.map(a => `
+        <button class="article-item ${a.id === currentId ? 'active' : ''}" onclick="loadArticle('${a.id}')">
+          ${a.id}. ${lang === 'zh' ? a.zh : a.en}
+        </button>
+      `).join('')}
+    `
+  }).join('')
+}
+
+// ── Render Home ──
+function renderHome() {
+  currentId = null
+  const lang = document.documentElement.getAttribute('data-lang') || 'zh'
+  document.getElementById('homeHero').style.display = ''
+  document.getElementById('homeGrid').style.display = 'grid'
+  document.getElementById('articleContent').style.display = 'none'
+  document.getElementById('breadcrumb').innerHTML = `<span>${lang === 'zh' ? '首页' : 'Home'}</span>`
+
+  const grid = document.getElementById('homeGrid')
+  grid.innerHTML = CATEGORIES.map(c => {
+    const count = ARTICLES.filter(a => a.cat === c.id).length
+    return `
+      <div class="cat-card" onclick="switchTab('categories'); document.getElementById('sidebar').classList.remove('show')">
+        <h3>${lang === 'zh' ? c.zh : c.en}</h3>
+        <div class="cat-en">${lang === 'zh' ? c.en : c.zh}</div>
+        <div class="cat-count">${count} ${lang === 'zh' ? '篇文章' : 'articles'}</div>
+      </div>
+    `
+  }).join('')
+}
+
+// ── Load Article ──
+async function loadArticle(id) {
+  currentId = id
+  const article = ARTICLES.find(a => a.id === id)
+  if (!article) return
+
+  const lang = document.documentElement.getAttribute('data-lang') || 'zh'
+  location.hash = `#/article/${id}`
+
+  document.getElementById('homeHero').style.display = 'none'
+  document.getElementById('homeGrid').style.display = 'none'
+  document.getElementById('articleContent').style.display = 'block'
+
+  const cat = CATEGORIES.find(c => c.id === article.cat)
+  document.getElementById('breadcrumb').innerHTML = `
+    <a href="#/" style="color:var(--accent);text-decoration:none" onclick="renderHome();return false">${lang === 'zh' ? '首页' : 'Home'}</a>
+    &nbsp;/&nbsp; <span>${lang === 'zh' ? article.zh : article.en}</span>
+  `
+
+  const contentEl = document.getElementById('articleContent')
+
+  try {
+    const resp = await fetch(article.file)
+    if (!resp.ok) throw new Error('Not found')
+    const raw = await resp.text()
+
+    // Render markdown with header
+    const displayTitle = lang === 'zh' ? article.zh : article.en
+    const enDesc = extractEnglishDesc(raw)
+    const body = stripEnglishDesc(raw)
+
+    let html = `<h2>${displayTitle}</h2>`
+
+    // Show English description banner when viewing Chinese, or brief context
+    if (lang === 'zh' && enDesc) {
+      html += `<div class="en-banner"><strong>English:</strong> ${enDesc}</div>`
+    }
+
+    html += marked.parse(body)
+    contentEl.innerHTML = html
+
+    // Highlight code blocks
+    contentEl.querySelectorAll('pre code').forEach(block => {
+      hljs.highlightElement(block)
+    })
+  } catch (e) {
+    contentEl.innerHTML = `<p style="color:var(--text-secondary)">${lang === 'zh' ? '加载失败' : 'Failed to load'}: ${article.file}</p>`
+  }
+
+  // Mobile: close sidebar
+  document.getElementById('sidebar').classList.remove('show')
+  renderSidebar()
+}
+
+// ── Helpers ──
+function extractEnglishDesc(md) {
+  const m = md.match(/>\s*\*\*English\*\*:\s*(.+?)\n/)
+  return m ? m[1] : ''
+}
+
+function stripEnglishDesc(md) {
+  return md.replace(/>\s*\*\*English\*\*:\s*.+?\n/, '')
+}
+
+// ── Listen hash changes for back/forward ──
+window.addEventListener('hashchange', () => {
+  if (location.hash.startsWith('#/article/')) {
+    const id = location.hash.replace('#/article/', '')
+    loadArticle(id)
+  } else {
+    renderHome()
+    renderSidebar()
+  }
+})
+</script>
+</body>
+</html>
