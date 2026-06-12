@@ -2,6 +2,8 @@
 
 > **English**: Event Capture & Bubbling — Understanding the DOM event flow: capture phase, target phase, and bubbling phase with `addEventListener`.
 
+<!-- zh -->
+
 ### 事件 DOM0 级与事件 DOM2 级
 
 #### addEventListener 语法
@@ -52,3 +54,60 @@ element.addEventListener('click', handler);
 
 - <https://www.bilibili.com/video/BV1m7411L7YW>
 - <https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener>
+
+<!-- /zh -->
+
+<!-- en -->
+
+### DOM Level 0 Events and DOM Level 2 Events
+
+#### addEventListener Syntax
+
+```js
+target.addEventListener(type, listener, options);
+target.addEventListener(type, listener, useCapture);
+```
+
+- `type`: The event type
+- `listener`: The event handler function
+- `useCapture`: Optional, boolean, defaults to `false` (bubbling phase), `true` (capture phase)
+
+### Event Flow
+
+The event flow consists of three phases:
+
+1. **Capture Phase**: The event propagates downward from the `window` object to the parent of the target node
+2. **Target Phase**: The event reaches the target node
+3. **Bubbling Phase**: The event propagates upward from the parent of the target node to the `window` object
+
+### Event Capture
+
+The event starts from the outermost element and propagates inward to the innermost element (the target element). This process is called event capture.
+
+```js
+// Triggered during the capture phase
+element.addEventListener('click', handler, true);
+```
+
+### Event Bubbling
+
+The event starts from the innermost element and propagates outward to the outermost element. This process is called event bubbling.
+
+```js
+// Triggered during the bubbling phase (default)
+element.addEventListener('click', handler, false);
+// or
+element.addEventListener('click', handler);
+```
+
+### Preventing Event Propagation
+
+- `event.stopPropagation()` — Prevents further propagation of the event (both capture and bubbling)
+- `event.stopImmediatePropagation()` — Prevents event propagation and also prevents other similar event handlers on the same element from executing
+
+### References
+
+- <https://www.bilibili.com/video/BV1m7411L7YW>
+- <https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener>
+
+<!-- /en -->

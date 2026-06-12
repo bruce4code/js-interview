@@ -2,6 +2,8 @@
 
 > **English**: new & instanceof — How `new` works internally and how `instanceof` checks the prototype chain.
 
+<!-- zh -->
+
 ## new 的实现
 
 ### 描述（摘于 MDN）
@@ -97,3 +99,105 @@ function Foo() {}
 let a = { b: 1 }
 // 这个字面量内部也是使用了 new Object()
 ```
+
+<!-- /zh -->
+
+<!-- en -->
+
+## How `new` Works
+
+### Description (from MDN)
+
+The `new` keyword performs the following operations:
+1. Creates an empty plain JavaScript object (i.e., `{}`)
+2. Links that object (sets its constructor) to another object
+3. Uses the newly created object from step 1 as the `this` context
+4. Returns `this` if the function does not return an object
+
+Let's try to implement it based on the description above:
+
+```js
+function create() {
+    let obj = {}
+    // Get the constructor
+    let con = [].shift.call(arguments)
+    // Link to the prototype
+    obj.__proto__ = con.prototype
+    // Change the `this` binding
+    let result = con.apply(obj, arguments)
+    // Check if the constructor returns an object; if so, use it
+    return result instanceof Object ? result : obj
+}
+```
+
+### Optimized Version
+
+```js
+function newOperator(ctor, ...args) {
+    if (typeof ctor !== 'function' && typeof ctor !== 'Function') {
+        throw new TypeError('Type Error')
+    }
+    const obj = Object.create(ctor.prototype) // Simplifies steps 1.1 and 1.2 into one line
+    const res = ctor.apply(obj, args)
+    const isObj = typeof res === 'object' && res !== null
+    const isFunc = typeof res === 'Function' || typeof res === 'function'
+    return isObj || isFunc ? res : obj
+}
+```
+
+## How `instanceof` Works
+
+`instanceof` can correctly determine the type of an object because its internal mechanism checks whether the type's `prototype` can be found in the object's prototype chain.
+
+```js
+function myInstanceof(left, right) {
+    let prototype = right.prototype
+    let proto = left.__proto__
+    // ES5 method to get the prototype of an object
+    // let proto = Object.getPrototypeOf(left);
+    while (true) { // Traverse the prototype chain
+        if (proto === null || proto === undefined) {
+            return false
+        }
+        if (prototype === proto) {
+            return true
+        }
+        proto = proto.__proto__ // Key code
+    }
+}
+
+const obj1 = new Object()
+myInstanceof(obj1, Object)
+```
+
+### Summary
+
+- Object is the parent of all objects; all objects can find it through `__proto__`
+- Function is the parent of all functions; all functions can find it through `__proto__`
+- `Function.prototype` and `Object.prototype` are two special objects created by the engine
+- Except for the two special objects above, all other objects are created via constructors with `new`
+- A function's `prototype` is an object, which is the prototype
+- An object's `__proto__` points to its prototype; `__proto__` connects objects and prototypes to form the prototype chain
+
+### More
+
+```js
+console.log(Object.prototype.__proto__ === null) // true
+```
+
+Reference: Teacher Ruan Yifeng's article "The Difference Between undefined and null":
+http://www.ruanyifeng.com/blog/2014/03/undefined-vs-null.html
+
+`null` means "no object" — there should be no value at that location.
+`undefined` means "missing value" — there should be a value here, but it has not been defined yet.
+
+```js
+function Foo() {}
+// function is essentially syntactic sugar
+// Internally equivalent to new Function()
+
+let a = { b: 1 }
+// This object literal also uses new Object() internally
+```
+
+<!-- /en -->

@@ -2,6 +2,8 @@
 
 > **English**: Limitations of typeof, indexOf — Inaccuracies in type detection and better alternatives like `Array.isArray()` and `Object.prototype.toString`.
 
+<!-- zh -->
+
 ## typeof 的缺点
 
 ### typeof null 的问题
@@ -48,3 +50,56 @@ indexOf 内部使用严格相等运算符（===）进行判断，而 NaN === NaN
 // 使用 find
 [NaN].find(y => Object.is(NaN, y)) // NaN
 ```
+
+<!-- /zh -->
+
+<!-- en -->
+
+## Drawbacks of typeof
+
+### The typeof null problem
+
+```js
+typeof null // 'object' (This is a historic bug in JavaScript)
+```
+
+When JS stores variables at the low level, it stores type information in the lower 1-3 bits of the variable's machine code:
+- 000: object
+- 010: float
+- 100: string
+- 110: boolean
+- 1: integer
+
+All machine code bits of `null` are 0, so it is mistakenly identified as an object type.
+
+### Correct way to check types
+
+```js
+Object.prototype.toString.call(null)       // '[object Null]'
+Object.prototype.toString.call(undefined)  // '[object Undefined]'
+Object.prototype.toString.call([])         // '[object Array]'
+Object.prototype.toString.call({})         // '[object Object]'
+```
+
+## Drawbacks of indexOf
+
+```js
+[NaN].indexOf(NaN) // -1 Cannot detect NaN
+```
+
+`indexOf` internally uses the strict equality operator (`===`) for comparison, and `NaN === NaN` is false.
+
+### Alternatives
+
+```js
+// Using includes
+[NaN].includes(NaN) // true
+
+// Using findIndex
+[NaN].findIndex(y => Object.is(NaN, y)) // 0
+
+// Using find
+[NaN].find(y => Object.is(NaN, y)) // NaN
+```
+
+<!-- /en -->

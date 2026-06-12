@@ -2,6 +2,7 @@
 
 > **English**: Simple Promise Implementation — A minimal Promise implementation with state machine, `then` chaining, `resolve`, and `reject`.
 
+<!-- zh -->
 ```js
 class myPromise {
     static PENDING = '待定';
@@ -80,3 +81,85 @@ class myPromise {
 - [https://github.com/xieranmaya/blog/issues/5](https://github.com/xieranmaya/blog/issues/5)
 - [https://juejin.im/post/6854573217013563405](https://juejin.im/post/6854573217013563405)
 - [https://juejin.cn/post/7069805387490263047](https://juejin.cn/post/7069805387490263047)
+<!-- /zh -->
+
+<!-- en -->
+```js
+class myPromise {
+    static PENDING = 'Pending';
+    static FULFILLED = 'Fulfilled';
+    static REJECTED = 'Rejected';
+
+    constructor(func){
+        this.status = myPromise.PENDING;
+        this.result = null;
+        this.resolveCallbacks = [];   // Handle async functions inside then, i.e., functions in pending state, store callbacks
+        this.rejectCallbacks = [];
+        try {
+            func(this.resolve.bind(this), this.reject.bind(this))
+        } catch (error) {
+            this.reject(error)
+        }
+    }
+
+    resolve(result){
+        setTimeout(() => {
+            if(this.status === myPromise.PENDING){
+                this.status = myPromise.FULFILLED;
+                this.result = result
+            }
+            this.resolveCallbacks.forEach(callback => {
+                callback(result)
+            })
+        })
+    }
+
+    reject(result){
+        setTimeout(() => {
+            if(this.status === myPromise.PENDING){
+                this.status = myPromise.REJECTED;
+                this.result = result
+            }
+            this.rejectCallbacks.forEach(callback => {
+                callback(result)
+            })
+        })
+    }
+
+    then(onFULFILLED, onREDJECTED){
+        return new myPromise((resolve, reject) => {
+            onFULFILLED = typeof onFULFILLED === 'function' ? onFULFILLED : () => {};
+            onREDJECTED = typeof onREDJECTED === 'function' ? onREDJECTED : () => {};
+            
+            if(this.status === myPromise.PENDING){
+                this.resolveCallbacks.push(onFULFILLED)
+                this.rejectCallbacks.push(onREDJECTED)
+            }
+            if(this.status === myPromise.FULFILLED){
+                setTimeout(() => {
+                    onFULFILLED(this.result)
+                })
+            }
+            if(this.status === myPromise.REJECTED){
+                setTimeout(() => {
+                    onREDJECTED(this.result)
+                })
+            }
+        })
+    }
+}
+```
+
+### Common interview questions
+
+- How to stop a Promise chain
+- Implementing a Promise scheduler with concurrency limits
+- Maintaining a queue of promises
+- Implementing the `Promise.all` method (use a count to track the number of successfully resolved promises, output when it matches the length of the input promise list)
+
+References:
+- [Video - Bilibili](https://www.bilibili.com/video/BV1RR4y1p7my/)
+- [https://github.com/xieranmaya/blog/issues/5](https://github.com/xieranmaya/blog/issues/5)
+- [https://juejin.im/post/6854573217013563405](https://juejin.im/post/6854573217013563405)
+- [https://juejin.cn/post/7069805387490263047](https://juejin.cn/post/7069805387490263047)
+<!-- /en -->

@@ -2,6 +2,8 @@
 
 > **English**: Object.defineProperty — Using `Object.defineProperty()` with data descriptors and accessor descriptors (getter/setter), and its role in Vue reactivity.
 
+<!-- zh -->
+
 ### 题目
 
 ```js
@@ -57,3 +59,65 @@ Object.defineProperty(obj, prop, descriptor);
 2. 实现对象的代理和拦截
 3. 定义只读属性
 4. 实现计算属性
+
+<!-- /zh -->
+
+<!-- en -->
+
+### Problem
+
+```js
+(function () {
+  var u = { a: 1, b: 2 };
+  var r = {
+    m: function (k) {
+      return u[k];
+    },
+  };
+  window.r = r;
+})();
+
+var R = window.r;
+alert(r.m('a'));
+```
+
+1. What does `alert` print?
+2. Can we obtain `u` through `r.m`?
+
+### Solution
+
+```js
+Object.defineProperty(Object.prototype, 'key1', {
+  get: function () {
+    return this;
+  },
+});
+
+console.log(R.m('key1')); // Returns the u object
+```
+
+By using `Object.defineProperty` to define a getter property `key1` on `Object.prototype`, when accessing `R.m('key1')`, `u['key1']` triggers the getter on the prototype chain and returns `this` (i.e., the `u` object).
+
+### Object.defineProperty Usage
+
+```js
+Object.defineProperty(obj, prop, descriptor);
+```
+
+#### descriptor Parameters
+
+- **value**: The property value
+- **writable**: Whether the property is writable
+- **enumerable**: Whether the property is enumerable
+- **configurable**: Whether the property is configurable (can be deleted or modified)
+- **get**: The getter function
+- **set**: The setter function
+
+### Use Cases
+
+1. Implementing reactive data (core of Vue 2.x)
+2. Proxy and interception of objects
+3. Defining read-only properties
+4. Implementing computed properties
+
+<!-- /en -->

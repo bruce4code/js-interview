@@ -2,6 +2,7 @@
 
 > **English**: Full bind Implementation — A complete `bind` polyfill supporting partial application, `new` operator priority, and prototype preservation.
 
+<!-- zh -->
 [Function.prototype.bind() - MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/bind) 中这样解释：
 
 > `bind()` 方法创建一个新的函数，在 `bind()` 被调用时，这个新函数的 `this` 被指定为 `bind()` 的第一个参数，而其余参数将作为新函数的参数，供调用时使用。
@@ -83,3 +84,88 @@ foo.myBind(obj,2,3)()
 
 参考：
 - [https://www.cnblogs.com/coco1s/p/4833199.html](https://www.cnblogs.com/coco1s/p/4833199.html)
+<!-- /zh -->
+
+<!-- en -->
+[Function.prototype.bind() - MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/bind) explains it as follows:
+
+> The `bind()` method creates a new function that, when called, has its `this` keyword set to the provided value, with a given sequence of arguments preceding any provided when the new function is called.
+
+### Usage of bind
+
+```js
+function bar(){
+   console.log(this.name)
+}
+var name = 'Tea Egg'
+
+var obj = {
+   name: 'bruce'
+}
+
+bar()
+
+bar.bind(obj)()
+```
+
+### Basic implementation
+
+```js
+Function.prototype.myBind = function(ctx){
+ var agrs = [...arguments].slice(1)
+ var that = this?this:window
+ return function(){
+ that.apply(ctx,args)
+ }
+}
+
+bar.myBind(obj)()
+```
+
+#### Does multiple bind calls change the output?
+
+```js
+var obj2 = {
+  name:'bruce2'
+}
+var obj3 = {
+  name:'bruce3'
+}
+bar.myBind(obj).myBind(obj2).myBind(obj3 )()
+```
+
+The output is the same. The implementation of `bind()` essentially wraps a `call`/`apply` inside a function. The second `bind()` wraps around the first `bind()`, so subsequent `bind` calls after the first are ineffective.
+
+### Complete implementation (handling arguments and new operator)
+
+```js
+Function.prototype.myBind = function(ctx,...args){
+   if (typeof this !== 'function') {
+     throw new Error("Type Error");
+   }
+    var self= this ? this : window
+     // Handle new operator case
+    return function F(){
+        if(this instanceof F) {
+         return new self(...args, ...arguments)
+       }
+       return  self.apply(ctx, [...args, ...arguments])
+   }
+}
+
+function foo(x,y){
+  return x + y
+}
+foo.myBind(obj,2,3)()
+```
+
+### Summary of call, apply, bind
+
+1. `apply`, `call`, and `bind` are all used to change the `this` object a function points to;
+2. The first argument of `apply`, `call`, and `bind` is the object that `this` should point to, i.e., the desired context;
+3. `apply`, `call`, and `bind` can all pass subsequent arguments;
+4. `bind` returns the corresponding function, allowing it to be called later; `apply` and `call` invoke the function immediately.
+
+References:
+- [https://www.cnblogs.com/coco1s/p/4833199.html](https://www.cnblogs.com/coco1s/p/4833199.html)
+<!-- /en -->

@@ -2,6 +2,8 @@
 
 > **English**: Scope & Hoisting — Understanding scope chain, variable hoisting, function hoisting, and execution context in JavaScript.
 
+<!-- zh -->
+
 ## 作用域
 
 当函数执行的时候（执行前一刻），会创建一个执行期的上下文（AO）。全局预编译的时候会创建一个 GO。
@@ -57,3 +59,65 @@ function foo() {}
 var foo = 10
 console.log(foo)  // 10
 ```
+
+<!-- /zh -->
+
+<!-- en -->
+
+## Scope
+
+When a function executes (just before execution), an execution context (AO - Activation Object) is created. During global pre-compilation, a GO (Global Object) is created.
+
+In the function context, we use the Activation Object (AO) to represent the variable object.
+
+### Function Scope Pre-compilation (AO)
+
+Four steps of function pre-compilation:
+1. Create the AO object
+2. Find variable declarations and parameters, use variable names and parameter names as property names of the AO object, with initial value of undefined
+3. Unify actual parameters with formal parameters
+4. Find function declarations inside the function and assign the function body as the value
+
+```js
+function foo() {
+    console.log(a)
+    var a = 10
+    function a() {}
+    console.log(a)
+}
+foo()
+```
+
+### Global Pre-compilation (GO)
+
+Three steps of global pre-compilation:
+1. Create the GO object
+2. Find variable declarations, use variable names as property names of the GO object, with initial value of undefined
+3. Find function declarations globally and assign the function body as the value
+
+```js
+console.log(a)  // ƒ a() {}
+var a = 10
+function a() {}
+console.log(a)  // 10
+```
+
+## Variable Hoisting
+
+- Variables declared with `var` are hoisted
+- Variables declared with `let` and `const` are not hoisted and have a Temporal Dead Zone (TDZ)
+- Function declarations are hoisted in their entirety; function expressions only hoist the variable name
+
+## Priority
+
+- Function declarations have higher priority than variable declarations
+- If a variable name and function name are the same, the variable declaration is ignored (not overwritten), but the assignment operation will overwrite it
+
+```js
+console.log(foo)  // ƒ foo() {}
+function foo() {}
+var foo = 10
+console.log(foo)  // 10
+```
+
+<!-- /en -->

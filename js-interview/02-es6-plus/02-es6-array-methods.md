@@ -2,6 +2,8 @@
 
 > **English**: ES6 Array Methods — New array methods like `Array.from()`, `find()`, `flat()`, `includes()`, `at()` and their use cases.
 
+<!-- zh -->
+
 参考：<https://es6.ruanyifeng.com/#docs/array>
 
 ### 1. 扩展运算符
@@ -139,3 +141,147 @@ arr.at(-2)    // 130
 arr.at()      // 5，默认第一个
 arr.at(6)     // undefined，大于数组长度
 ```
+
+<!-- /zh -->
+
+<!-- en -->
+
+Reference: <https://es6.ruanyifeng.com/#docs/array>
+
+### 1. Spread Operator
+
+```js
+console.log(...[1, 2, 3])
+// 1 2 3
+
+console.log(1, ...[2, 3, 4], 5)
+// 1 2 3 4 5
+
+[...document.querySelectorAll('div')]
+// [<div>, <div>, <div>]
+
+[...'hello']
+// ['h', 'e', 'l', 'l', 'o']
+```
+
+### 2. Array.from()
+
+Converts array-like objects or iterable objects into a real array.
+
+```js
+let arrayLike = {
+    '0': 'a',
+    '1': 'b',
+    '2': { a : 'a'},
+    length: 3
+};
+
+// ES5 approach
+var arr1 = [].slice.call(arrayLike);
+
+// ES6 approach
+let arr2 = Array.from(arrayLike);
+```
+
+### 3. Array.of()
+
+Converts a set of values into an array, replacing `new Array()`.
+
+```js
+Array.of() // []
+Array.of(undefined) // [undefined]
+Array.of(1) // [1]
+Array.of(1, 2) // [1, 2]
+```
+
+### 4. copyWithin()
+
+Shallow copies a portion of an array to another location within the same array.
+
+```js
+let arr = [1, 2, 3, { a : 4, b : 444}, 5]
+arr.copyWithin(0, 3, 4)
+// Copies the element at index 3 to index 0
+```
+
+### 5. find() and findIndex()
+
+Finds the first array member/index that meets the condition.
+
+```js
+[1, 5, 10, 15].findIndex(function(value, index, arr) {
+  return value > 9;
+}) // 2
+
+// Can find NaN, making up for indexOf's deficiency
+[NaN].indexOf(NaN)  // -1
+[NaN].findIndex(y => Object.is(NaN, y))  // 0
+```
+
+### 6. fill()
+
+Fills an array with a given value.
+
+```js
+['a', 'b', 'c'].fill(7)
+// [7, 7, 7]
+
+new Array(3).fill(7)
+// [7, 7, 7]
+```
+
+### 7. entries(), keys() and values()
+
+```js
+for (let index of ['a', 'b'].keys()) {
+  console.log(index);
+}
+// 0  1
+
+for (let elem of ['a', 'b'].values()) {
+  console.log(elem);
+}
+// 'a'  'b'
+
+for (let [index, elem] of ['a', 'b'].entries()) {
+  console.log(index, elem);
+}
+// 0 "a"  1 "b"
+```
+
+### 8. includes()
+
+Determines whether an array contains a certain value.
+
+```js
+[1, 2, 3].includes(2)     // true
+[1, 2, 3].includes(4)     // false
+[1, 2, NaN].includes(NaN) // true
+```
+
+### 9. flat() and flatMap()
+
+Flattens nested arrays.
+
+```js
+[1, [2, [3]]].flat(Infinity)
+// [1, 2, 3]
+
+// flatMap is equivalent to map + flat
+[2, 3, 4].flatMap((x) => [x, x * 2])
+// [2, 4, 3, 6, 4, 8]
+```
+
+### 10. at()
+
+Supports negative indexing.
+
+```js
+const arr = [5, 12, 8, 130, 44];
+arr.at(2)     // 8
+arr.at(-2)    // 130
+arr.at()      // 5, defaults to the first element
+arr.at(6)     // undefined, greater than array length
+```
+
+<!-- /en -->

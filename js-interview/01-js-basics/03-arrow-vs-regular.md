@@ -2,6 +2,8 @@
 
 > **English**: Arrow vs Regular Functions — Differences in `this` binding, `arguments` object, `new` usage, and prototype.
 
+<!-- zh -->
+
 ## 1. 解决 this 指向问题
 
 ```js
@@ -53,3 +55,61 @@ let fn = function (a, b) {
 // 箭头函数
 let fn = (a, b) => a + b
 ```
+
+<!-- /zh -->
+
+<!-- en -->
+
+## 1. Solving the `this` binding problem
+
+```js
+let normal = {
+    name: 'tea egg',
+    fn: function () {
+        setTimeout(function () { this.name }, 10)
+        // Here `this` points to window
+    }
+}
+
+let arrow = {
+    name: 'tea egg',
+    fn: function () {
+        setTimeout(() => { this.name }, 10)
+        // Using arrow functions, `this` points to the outer scope's `this`, i.e., name
+    }
+}
+```
+
+## 2. Arrow functions do not have their own `this`
+
+Arrow functions themselves do not have `this`; they capture the `this` value from their enclosing context as their own `this` value.
+
+## 3. Arrow functions cannot be used as constructors
+
+Arrow functions cannot use the `new` keyword to instantiate objects; doing so will throw an error.
+
+## 4. Arrow functions do not have an `arguments` object
+
+If you need to use variable-length arguments, you can use rest parameters (`...`) instead.
+
+## 5. Arrow functions cannot have their `this` changed via call/apply/bind
+
+Because the `this` of an arrow function is determined at definition time, it cannot be changed through call/apply/bind.
+
+## 6. Arrow functions cannot use the `yield` keyword
+
+Therefore, arrow functions cannot be used as Generator functions.
+
+## 7. Arrow function syntax is more concise
+
+```js
+// Regular function
+let fn = function (a, b) {
+    return a + b
+}
+
+// Arrow function
+let fn = (a, b) => a + b
+```
+
+<!-- /en -->

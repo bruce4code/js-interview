@@ -2,6 +2,8 @@
 
 > **English**: Destructuring — Array destructuring, object destructuring, default values, and nested destructuring patterns in ES6.
 
+<!-- zh -->
+
 参考：<https://es6.ruanyifeng.com/#docs/destructuring>
 
 ### 数组解构
@@ -54,3 +56,62 @@ x // null
 1. 默认值可以引用解构赋值的其他变量，但该变量必须已经声明
 2. 解构失败变量的值等于 `undefined`
 3. 如果解构模式是嵌套对象，且子对象所在的父属性不存在，将会报错
+
+<!-- /zh -->
+
+<!-- en -->
+
+Reference: <https://es6.ruanyifeng.com/#docs/destructuring>
+
+### Array Destructuring
+
+```js
+let [x = 1, y = x] = [];     // x=1; y=1
+let [x = 1, y = x] = [2];    // x=2; y=2
+let [x = 1, y = x] = [1, 2]; // x=1; y=2
+let [x = y, y = 1] = [];     // ReferenceError: y is not defined
+```
+
+The last expression above throws an error because when `x` uses `y` as its default value, `y` has not yet been declared.
+
+### Object Destructuring
+
+```js
+var {x = 3} = {};
+x // 3
+
+var {x, y = 5} = {x: 1};
+x // 1
+y // 5
+
+var {x: y = 3} = {};
+y // 3
+
+var {x: y = 3} = {x: 5};
+y // 5
+
+var { message: msg = 'Something went wrong' } = {};
+msg // "Something went wrong"
+```
+
+### When Default Values Take Effect
+
+A default value takes effect only when the object's property value is strictly equal to `undefined`.
+
+```js
+var {x = 3} = {x: undefined};
+x // 3
+
+var {x = 3} = {x: null};
+x // null
+```
+
+In the code above, property `x` equals `null`. Since `null` is not strictly equal to `undefined`, it is considered a valid assignment, so the default value `3` does not take effect.
+
+### Notes
+
+1. Default values can reference other variables in the destructuring pattern, but those variables must already be declared
+2. The value of a variable that fails to destructure is `undefined`
+3. If the destructuring pattern is a nested object and the parent property of the child object does not exist, an error will be thrown
+
+<!-- /en -->

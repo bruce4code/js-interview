@@ -2,6 +2,8 @@
 
 > **English**: Currying & Overloading — Using closures for argument reuse and simulating function overloading in JavaScript.
 
+<!-- zh -->
+
 ## 理解柯里化之前我们先来回顾下 bind 的实现
 
 ```js
@@ -125,3 +127,133 @@ data[2]();
 - https://segmentfault.com/a/1190000015929416
 - https://juejin.cn/post/7031525301414805518
 - https://juejin.cn/post/6937469222251560990
+
+<!-- /zh -->
+
+<!-- en -->
+
+## Before understanding currying, let's review the implementation of bind
+
+```js
+Function.prototype.myBind = function (ctx, ...args) {
+    if (typeof this !== 'function') {
+        throw new Error("Type Error");
+    }
+    var self = this ? this : window
+    return function F() {
+        if (this instanceof F) {
+            // Called as a constructor with new
+            return new self(...args, ...arguments)
+        }
+        return self.apply(ctx, [...args, ...arguments])
+    }
+}
+```
+
+## Two major characteristics of closures: protection and preservation
+
+## Currying programming concept: preprocessing concept
+
+It also leverages the preservation characteristic of closures (preserving references to outer scope, preventing them from being destroyed).
+
+### Understanding Currying
+
+The concept of Currying is actually very simple: you pass only a portion of the arguments to a function to call it, and it returns a function to handle the remaining arguments.
+
+### Implementing an add function
+
+```js
+function currying(fn, length) {
+    var len = length || fn.length
+    return function (...args) {
+        if (args.length < len) {
+            return currying(fn.bind(null, ...args), len - args.length)
+        } else {
+            return fn(...args)
+        }
+    }
+}
+
+// Here the maximum parameter length is 4
+var add = function add(a, b, c, d) {
+    return a + b + c + d
+}
+var add = currying(add, 4)
+
+// add(1)           // 1 --- parameter length < 4, returns a function, achieving deferred computation
+// add(1)(2)        // 3
+// add(1)(2)(3)     // 6
+// add(1,2)(3,4)    // 10 --- parameter length equals the set length, returns the final result
+```
+
+### What is the use of currying or partial application?
+
+Whether it is currying or partial application, both allow us to pass arguments partially, whereas traditional function calls require all arguments to be predetermined. If you only have some arguments at one point in your code and the rest at another point, currying and partial application come in handy.
+
+Another scenario where currying shines is that when a function has only one parameter, it is easier to compose them (Single Responsibility Principle). Therefore, if a function ultimately requires three arguments, after currying it becomes a function that needs three calls, each taking one argument. When composing functions, this unary function form makes things simpler to handle.
+
+To summarize, there are three common use cases:
+1. Deferred computation
+2. Argument reuse
+3. Dynamically generating functions
+
+## Closure characteristics — Implementing JS overloading
+
+In John Resig's "Secrets of the JavaScript Ninja", this method fully leverages the characteristics of closures!
+
+```js
+function addMethod(object, name, fn) {
+    var old = object[name]; // Store the previously added method in a temporary variable old
+    object[name] = function () { // Override the object[name] method
+        // If the number of arguments passed matches the expected count, call it directly
+        if (fn.length === arguments.length) {
+            return fn.apply(this, arguments);
+        // Otherwise, check if old is a function, and if so, call old
+        } else if (typeof old === "function") {
+            return old.apply(this, arguments);
+        }
+    }
+}
+
+addMethod(window, 'fn', (name) => console.log(`I am ${name}`))
+addMethod(window, 'fn', (name, age) => console.log(`I am ${name}, ${age} years old this year`))
+addMethod(window, 'fn', (name, age, sport) => console.log(`I am ${name}, ${age} years old, my favorite sport is ${sport}`))
+```
+
+Implementation result:
+
+```
+window.fn('tea egg')
+window.fn('tea egg', 18)
+window.fn('tea egg', 18, 'basketball')
+```
+
+## Applications of closures
+
+- Throttling and debouncing
+- Currying implementation
+- How to check for memory leaks: the Performance panel and Memory panel can help find leak phenomena and locations
+
+```js
+// for loop and closures (known as a must-practice problem)
+var data = [];
+
+for (var i = 0; i < 3; i++) {
+    data[i] = function () {
+        console.log(i);
+    };
+}
+
+data[0]();
+data[1]();
+data[2]();
+```
+
+### References
+
+- https://zhuanlan.zhihu.com/p/31271179
+- https://segmentfault.com/a/1190000015929416
+- https://juejin.cn/post/7031525301414805518
+- https://juejin.cn/post/6937469222251560990
+
+<!-- /en -->

@@ -2,6 +2,7 @@
 
 > **English**: map(parseInt) + Implement map & call — Understanding why `['1','2','3'].map(parseInt)` returns `[1, NaN, NaN]`, plus handwriting `map()` and `call()`.
 
+<!-- zh -->
 视频详解：[传送门](https://www.bilibili.com/video/BV1s54y1X7XF/?spm_id_from=autoNext)
 
 通过下面的调用，来大概理解 map 的默认输入参数：
@@ -143,3 +144,148 @@ VM6895:11 3 2 (3) [1, 2, 3]
 VM6895:13 undefined "res"
 (3) [undefined, undefined, undefined]
 ```
+<!-- /zh -->
+
+<!-- en -->
+Video explanation: [Link](https://www.bilibili.com/video/BV1s54y1X7XF/?spm_id_from=autoNext)
+
+Through the following call, we can roughly understand the default input parameters of map:
+
+```js
+[1,2,3].map(console.log)
+
+// 1 0 (3) [1, 2, 3]
+// 2 1 (3) [1, 2, 3]
+// 3 2 (3) [1, 2, 3]
+```
+
+That is, the default parameters passed to map are `item, index, arr` (i.e., placed in arguments).
+
+[parseInt - MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/parseInt)
+
+And `parseInt(string, radix)` requires two parameters. In this example, parseInt is not explicitly passed any parameters, so `string` and `radix` correspond to `item` and `index` in map respectively.
+
+| parseInt(string, radix) | string | radix | Output |
+|---|---|---|---|
+| parseInt(1, 0) | 1 | 0 | 1 |
+| parseInt(2, 1) | 2 | 1 | NaN |
+| parseInt(3, 2) | 3 | 2 | NaN |
+
+In summary, `['1','2','3'].map(parseInt)` is equivalent to:
+
+```js
+[1,2,3].map(function(item,index,arr){
+  return parseInt(item,index,arr)
+})
+// [1, NaN, NaN]
+```
+
+### Implementing map
+
+#### Approach 1
+
+```js
+Array.prototype.myMap = function(cb,thisArgs){
+     var innerArgs, res, count;
+        if(this == null){
+            throw new TypeError('this is null or not defined')
+        }
+    // 1. Assign O to the array calling map
+    var O = Object(this);
+    // 2. Assign len to the length of array O
+    var len = O.length >>> 0;
+       // 3. Check if cb is a function
+      if(Object.prototype.toString.call(cb)!= '[object Function]'){
+        throw new TypeError(cb + 'is not a function!')
+      }
+   // 4. If thisArgs has a value, assign innerArgs to thisArgs, otherwise undefined
+    if(thisArgs){
+        innerArgs = thisArgs
+    }
+    // 5. Create a new array res with the same length as the original array O
+     res= new Array(len)
+    // 6. Set count to 0
+     count= 0
+      // 7. Loop while k < len
+    while(count<len){
+        var kVal, mappedVal;
+        if(count in O){
+            // kVal is the value at index count
+            kVal = O[count];
+            // Execute cb with this pointing to innerArgs, 3 parameters: kVal (value), k (index), O (original array)
+            mappedVal = cb.myCall(innerArgs, kVal,count,O);  // For clearer understanding of map, we also implement myCall here
+            // Add return value to new array A
+            res[count] = mappedVal;
+        }
+        count++;
+    }
+    // 8. Return the processed new array
+    return res
+}
+```
+
+#### Approach 2: Implementing map with Array.prototype.reduce
+
+For those not familiar with reduce [click here - reduce MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce)
+
+```js
+Array.prototype.myMap = function(cb,thisArgs){
+     return this.reduce( function(acc,pre,index,arr){
+                console.log(acc,'===',pre)
+                acc[index] = cb.call(thisArgs, pre, index, arr)
+      return acc
+       },[])
+}
+```
+
+### Implementing call
+
+```js
+Function.prototype.myCall =function(obj){
+   // 1. Check obj value
+    obj = obj ? Object(obj) : window;
+    var args = [];
+    const fn = Symbol('fn')
+    obj[fn] = this
+    console.log(this,'this')
+    console.log(arguments,'arguments')
+    // Convert array-like to array
+    args =  [...arguments].slice(1)
+    var res = obj[fn](...args)
+    delete obj.fn
+    console.log(res,'res')
+    return res
+}
+
+// Give it a try, debugging helps understand the approach better
+[1,2,3].myMap(parseInt)
+
+VM6753:7 ƒ parseInt() { [native code] } "this"
+VM6753:8 Arguments(4) [Window, 1, 0, Array(3), callee: ƒ, Symbol(Symbol.iterator): ƒ] "arguments"
+VM6753:12 1 "res"
+VM6753:7 ƒ parseInt() { [native code] } "this"
+VM6753:8 Arguments(4) [Window, 2, 1, Array(3), callee: ƒ, Symbol(Symbol.iterator): ƒ] "arguments"
+VM6753:12 NaN "res"
+VM6753:7 ƒ parseInt() { [native code] } "this"
+VM6753:8 Arguments(4) [Window, 3, 2, Array(3), callee: ƒ, Symbol(Symbol.iterator): ƒ] "arguments"
+VM6753:12 NaN "res"
+(3) [1, NaN, NaN]
+```
+
+```js
+[1,2,3].myMap(console.log)
+VM6895:7 ƒ log() { [native code] } "this"
+VM6895:8 Arguments(4) [Window, 1, 0, Array(3), callee: ƒ, Symbol(Symbol.iterator): ƒ] "arguments"
+VM6895:11 1 0 (3) [1, 2, 3]
+VM6895:13 undefined "res"
+VM6895:7 ƒ log() { [native code] } "this"
+VM6895:8 Arguments(4) [Window, 2, 1, Array(3), callee: ƒ, Symbol(Symbol.iterator): ƒ] "arguments"
+VM6895:11 2 1 (3) [1, 2, 3]
+VM6895:13 undefined "res"
+VM6895:7 ƒ log() { [native code] } "this"
+VM6895:8 Arguments(4) [Window, 3, 2, Array(3), callee: ƒ, Symbol(Symbol.iterator): ƒ] "arguments"
+VM6895:11 3 2 (3) [1, 2, 3]
+VM6895:13 undefined "res"
+(3) [undefined, undefined, undefined]
+```
+<!-- /en -->

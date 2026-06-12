@@ -507,14 +507,23 @@ async function loadArticle(id) {
     if (!resp.ok) throw new Error('Not found')
     const raw = await resp.text()
 
-    // Render markdown with header
+    // Extract language-specific content
+    const zhMatch = raw.match(/<!--\s*zh\s*-->([\s\S]*?)<!--\s*\/zh\s*-->/)
+    const enMatch = raw.match(/<!--\s*en\s*-->([\s\S]*?)<!--\s*\/en\s*-->/)
+
+    let body
+    if (lang === 'zh') {
+      body = zhMatch ? zhMatch[1] : raw  // fallback to full file if no marker
+    } else {
+      body = enMatch ? enMatch[1] : (zhMatch ? zhMatch[1] : raw)
+    }
+
     const displayTitle = lang === 'zh' ? article.zh : article.en
     const enDesc = extractEnglishDesc(raw)
-    const body = stripEnglishDesc(raw)
 
     let html = `<h2>${displayTitle}</h2>`
 
-    // Show English description banner when viewing Chinese, or brief context
+    // English description banner (show when viewing CN)
     if (lang === 'zh' && enDesc) {
       html += `<div class="en-banner"><strong>English:</strong> ${enDesc}</div>`
     }
@@ -539,10 +548,6 @@ async function loadArticle(id) {
 function extractEnglishDesc(md) {
   const m = md.match(/>\s*\*\*English\*\*:\s*(.+?)\n/)
   return m ? m[1] : ''
-}
-
-function stripEnglishDesc(md) {
-  return md.replace(/>\s*\*\*English\*\*:\s*.+?\n/, '')
 }
 
 // ── Listen hash changes for back/forward ──

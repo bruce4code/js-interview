@@ -2,6 +2,7 @@
 
 > **English**: Shallow & Deep Copy — Methods for shallow copy (spread, `Object.assign`) and deep copy (`JSON.parse`, `structuredClone`, recursion).
 
+<!-- zh -->
 深浅拷贝主要是针对于引用类型而言的。
 
 ### 深拷贝
@@ -68,3 +69,73 @@ let newArr4 = [].concat(arr)
 ```
 
 **浅拷贝特点**：只复制第一层属性，嵌套的引用类型仍然共享同一内存地址。
+<!-- /zh -->
+
+<!-- en -->
+Shallow and deep copy mainly apply to reference types.
+
+### Deep Copy
+
+#### 1. JSON.parse(JSON.stringify(obj))
+
+```js
+const obj = { a: 1, b: { c: 2 } }
+const clone = JSON.parse(JSON.stringify(obj))
+```
+
+**Advantages**: Simple and easy to use
+
+**Disadvantages**:
+- Cannot handle functions, undefined, or Symbol (they are ignored)
+- Cannot handle regular expressions (become empty objects)
+- Cannot handle circular references (throws an error)
+- Date objects become strings
+- Ignores non-enumerable properties
+
+#### 2. lodash.deepClone
+
+Uses the third-party library lodash's deep clone method, comprehensive in functionality.
+
+#### 3. Manual Deep Clone
+
+Refer to relevant implementations.
+
+#### 4. structuredClone
+
+A native deep copy API supported by modern browsers.
+
+```js
+const original = { name: "MDN" }
+original.itself = original
+
+const clone = structuredClone(original)
+```
+
+**Advantages**: Native browser support, handles circular references
+
+**Disadvantages**: Does not support functions, DOM nodes, etc.
+
+### Shallow Copy
+
+```js
+let arr = [{ name: 'bruce' }, 1, 2, 3]
+
+// 1. slice
+let newArr = arr.slice()
+// Since array elements are reference objects, this is still a shallow copy
+
+// 2. Spread operator
+let newArr2 = [...arr]
+
+// 3. Object.assign
+let newObj = Object.assign({}, obj)
+
+// 4. Array destructuring
+let [...newArr3] = arr
+
+// 5. concat
+let newArr4 = [].concat(arr)
+```
+
+**Characteristics of Shallow Copy**: Only the first level of properties is copied; nested reference types still share the same memory address.
+<!-- /en -->
