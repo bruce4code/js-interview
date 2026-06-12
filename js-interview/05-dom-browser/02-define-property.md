@@ -1,5 +1,7 @@
 ## Object.defineProperty
 
+> **English**: Object.defineProperty — Using `Object.defineProperty()` with data descriptors and accessor descriptors (getter/setter), and its role in Vue reactivity.
+
 ### 题目
 
 ```js

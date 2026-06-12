@@ -1,5 +1,7 @@
 ## 类数组转化为数组
 
+> **English**: Array-like to Array — Converting array-like objects to arrays using `Array.from()`, `Array.prototype.slice()`, and spread operator.
+
 ### 什么是类数组
 
 类数组拥有 `length` 属性，其它属性（索引）为非负整数（对象中的索引会被当做字符串处理）；不具有数组所具有的方法；类数组是一个普通对象，而真实的数组是 `Array` 类型。

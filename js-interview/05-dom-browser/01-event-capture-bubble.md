@@ -1,5 +1,7 @@
 ## 事件捕获与冒泡
 
+> **English**: Event Capture & Bubbling — Understanding the DOM event flow: capture phase, target phase, and bubbling phase with `addEventListener`.
+
 ### 事件 DOM0 级与事件 DOM2 级
 
 #### addEventListener 语法

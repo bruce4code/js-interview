@@ -1,5 +1,7 @@
 ## 递归与尾递归
 
+> **English**: Recursion & Tail Call — Recursion fundamentals, stack overflow, and how tail call optimization (TCO) can solve it.
+
 ### 递归
 
 在数学与计算机科学中，递归是指在函数的定义中使用函数自身的方法。递归的关键字为：**传递**、**回归**、**边界**。每一次递归带着参数传递给下一轮处理，每次回归的过程都要进行边界判断，决定是否停止递归。

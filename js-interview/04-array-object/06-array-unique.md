@@ -1,5 +1,7 @@
 ## 数组去重的几种方式
 
+> **English**: Array Deduplication — Various deduplication methods: `Set`, `filter`+`indexOf`, `Map`, and double loop.
+
 ### 方式1：ES6 Set
 
 ```js

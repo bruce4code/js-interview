@@ -1,3 +1,7 @@
+# typeof 与 indexOf 的局限性
+
+> **English**: Limitations of typeof, indexOf — Inaccuracies in type detection and better alternatives like `Array.isArray()` and `Object.prototype.toString`.
+
 ## typeof 的缺点
 
 ### typeof null 的问题

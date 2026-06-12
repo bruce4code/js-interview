@@ -1,5 +1,7 @@
 ## 实现函数 (5).add(3).minus(2)
 
+> **English**: Number Prototype Extension — Extending `Number.prototype` with `add()` and `minus()` methods for chainable arithmetic operations.
+
 视频解析：[传送门](https://www.bilibili.com/video/BV1aE411C7pt?p=2)
 
 ```js

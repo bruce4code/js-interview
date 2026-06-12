@@ -1,5 +1,7 @@
 ## 手写倒计时
 
+> **English**: Countdown — Implementing a countdown timer with `setTimeout` and `setInterval`, including time drift correction.
+
 ### 使用 setTimeout 实现
 
 ```js

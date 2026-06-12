@@ -1,3 +1,7 @@
+# 原型与类继承
+
+> **English**: Prototype & Class Inheritance — Prototype chain inheritance, combination inheritance, parasitic combination inheritance, and ES6 class extends.
+
 ## 组合继承
 
 ```js

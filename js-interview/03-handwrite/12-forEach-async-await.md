@@ -1,5 +1,7 @@
 ## forEach 实现及与 async/await 的配合
 
+> **English**: forEach & async/await — Implementing `forEach`, understanding why `async/await` doesn't work as expected inside `forEach`, and alternatives using `reduce`.
+
 视频解析：[传送门](https://www.bilibili.com/video/BV1m7411L7YW)
 
 > 要在循环里面使用 async/await，用 for 循环或 for...of 循环。

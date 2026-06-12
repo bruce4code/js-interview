@@ -1,3 +1,7 @@
+# 箭头函数与普通函数的区别
+
+> **English**: Arrow vs Regular Functions — Differences in `this` binding, `arguments` object, `new` usage, and prototype.
+
 ## 1. 解决 this 指向问题
 
 ```js

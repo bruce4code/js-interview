@@ -1,3 +1,7 @@
+# this 关键字
+
+> **English**: this Keyword — How `this` is determined by default binding, implicit binding, explicit binding, and arrow functions.
+
 ## 函数的调用方式
 
 ### 情况一：在函数中去调用

@@ -1,3 +1,7 @@
+# a==1&&a==2&&a==3 的原理
+
+> **English**: How a==1&&a==2&&a==3 works — Exploiting `toString`/`valueOf`, `defineProperty` getters, or `Proxy` to make a variable equal multiple values.
+
 ## 考察 == 的隐形转换，数据的劫持
 
 - `==` 进行比较的时候，如果左右两边的数据类型不一样，则先转换为一样的，然后相比较

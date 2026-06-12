@@ -1,5 +1,7 @@
 ## 数组扁平化的几种方式
 
+> **English**: Array Flattening — Multiple ways to flatten nested arrays: `flat()`, reduce+concat, toString+split, and spread operator.
+
 ### 方式1：利用 toString + split
 
 ```js

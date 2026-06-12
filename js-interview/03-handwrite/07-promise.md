@@ -1,5 +1,7 @@
 ## Promise 的简单实现
 
+> **English**: Simple Promise Implementation — A minimal Promise implementation with state machine, `then` chaining, `resolve`, and `reject`.
+
 ```js
 class myPromise {
     static PENDING = '待定';

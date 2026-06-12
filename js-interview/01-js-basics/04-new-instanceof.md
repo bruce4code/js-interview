@@ -1,3 +1,7 @@
+# new 与 instanceof
+
+> **English**: new & instanceof — How `new` works internally and how `instanceof` checks the prototype chain.
+
 ## new 的实现
 
 ### 描述（摘于 MDN）

@@ -1,5 +1,7 @@
 ## 深浅拷贝方法及优缺点
 
+> **English**: Shallow & Deep Copy — Methods for shallow copy (spread, `Object.assign`) and deep copy (`JSON.parse`, `structuredClone`, recursion).
+
 深浅拷贝主要是针对于引用类型而言的。
 
 ### 深拷贝

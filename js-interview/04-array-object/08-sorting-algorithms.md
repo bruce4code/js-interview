@@ -1,5 +1,7 @@
 ## 3 种经典排序方式
 
+> **English**: Sorting Algorithms — Three classic sorting algorithms: bubble sort, insertion sort, and quick sort.
+
 ### 冒泡排序
 
 思路：当前项与后一项比较，数字大的往后排。

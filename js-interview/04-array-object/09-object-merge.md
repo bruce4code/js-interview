@@ -1,5 +1,7 @@
 ## 合并对象的几种方法
 
+> **English**: Object Merge — Merging objects with `Object.assign()`, spread operator, and custom deep merge functions.
+
 ### 扩展运算符
 
 ```js

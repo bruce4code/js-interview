@@ -1,3 +1,7 @@
+# typeof null 的由来
+
+> **English**: Why typeof null === 'object' — The legacy JS bug rooted in binary type tagging from the early VM implementation.
+
 ## 为什么 typeof null == 'object' 为 true？
 
 在 JS 中，null 有属于自己的类型 Null，而不属于 Object 类型。typeof 之所以会判定为 Object 类型，是因为 JavaScript 数据类型在底层都是以二进制的形式表示的，二进制的前三位为 0 会被 typeof 判断为对象类型，而 null 的二进制位恰好都是 0，因此 null 被误判断为 Object 类型。

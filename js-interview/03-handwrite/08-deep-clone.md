@@ -1,5 +1,7 @@
 ## 手写深拷贝
 
+> **English**: Deep Clone — Recursive deep cloning handling circular references, special types (Date, RegExp, Map, Set), and JSON limitations.
+
 考虑循环引用问题、类型问题等。
 
 ```js

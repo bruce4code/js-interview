@@ -1,5 +1,7 @@
 ## 节流（throttle）与防抖（debounce）
 
+> **English**: Throttle & Debounce — Implementing throttling (timestamp vs timer) and debouncing (leading/trailing) for performance optimization.
+
 ### 防抖 debounce
 
 ```js

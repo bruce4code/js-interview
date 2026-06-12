@@ -1,5 +1,7 @@
 ## 各种遍历方法及注意点
 
+> **English**: Iteration Methods — Comprehensive comparison of iteration methods: `forEach`, `map`, `filter`, `reduce`, `for...of`, `for...in`, and their caveats.
+
 ### 可枚举性
 
 对象的每个属性都有一个描述对象（Descriptor），用来控制该属性的行为。

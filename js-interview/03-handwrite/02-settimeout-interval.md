@@ -1,5 +1,7 @@
 ## 用 setTimeout 模拟实现 setInterval
 
+> **English**: setTimeout vs setInterval — Using recursive `setTimeout` to simulate `setInterval` and comparing their behaviors.
+
 视频传送门：[点我](https://www.bilibili.com/video/BV1DA411Y7Xe)
 
 首先是浏览器之间的差异，在浏览器中，`setTimeout()`/`setInterval()` 每调用一次定时器的最小间隔是 4ms，这通常是由于函数嵌套导致（嵌套层级达到一定深度），或者是由于已经执行的 `setInterval` 的回调函数阻塞导致的。

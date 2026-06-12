@@ -1,5 +1,7 @@
 ## ['1','2','3'].map(parseInt) + 实现 map/call
 
+> **English**: map(parseInt) + Implement map & call — Understanding why `['1','2','3'].map(parseInt)` returns `[1, NaN, NaN]`, plus handwriting `map()` and `call()`.
+
 视频详解：[传送门](https://www.bilibili.com/video/BV1s54y1X7XF/?spm_id_from=autoNext)
 
 通过下面的调用，来大概理解 map 的默认输入参数：

@@ -1,5 +1,7 @@
 ## Array.prototype.push 的理解
 
+> **English**: Understanding push — How `push` works on arrays and array-like objects, and V8's optimization of the `length` property.
+
 ### 经典面试题
 
 ```js

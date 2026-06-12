@@ -1,3 +1,7 @@
+# undefined 与 null 的区别
+
+> **English**: Why undefined == null is true — Abstract equality comparison rules and the semantic differences between null and undefined.
+
 ## undefined == null 为 true？
 
 undefined 和 null 的语义和场景不同，它们都表示的是一个无效的值。因此在 JS 中对这类值访问属性时，都会得到异常的结果。

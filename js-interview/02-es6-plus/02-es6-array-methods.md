@@ -1,5 +1,7 @@
 ## ES6 数组新增方法
 
+> **English**: ES6 Array Methods — New array methods like `Array.from()`, `find()`, `flat()`, `includes()`, `at()` and their use cases.
+
 参考：<https://es6.ruanyifeng.com/#docs/array>
 
 ### 1. 扩展运算符

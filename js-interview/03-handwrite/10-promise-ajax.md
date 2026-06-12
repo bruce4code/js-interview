@@ -1,5 +1,7 @@
 ## 用 Promise 封装 Ajax
 
+> **English**: Promise-wrapped Ajax — Wrapping `XMLHttpRequest` in a Promise for cleaner async HTTP requests.
+
 使用 Promise 封装 XMLHttpRequest。
 
 ### 基础封装

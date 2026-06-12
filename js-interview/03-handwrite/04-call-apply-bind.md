@@ -1,5 +1,7 @@
 ## call、apply、bind 的实现
 
+> **English**: Implement call/apply/bind — Handwriting `call`, `apply`, and `bind` using implicit binding with a temporary property.
+
 在 JavaScript 中，`call` 和 `apply` 都是为了改变函数体内部 `this` 的指向。`call` 与 `apply` 的区别就是入参的不同，`apply` 的第二个参数传的是数组。
 
 ### 实现 apply

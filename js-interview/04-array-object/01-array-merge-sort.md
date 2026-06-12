@@ -1,5 +1,7 @@
 ## 数组合并排序
 
+> **English**: Array Merge & Sort — Merging arrays with `concat` and spread operator, then sorting with custom compare functions.
+
 将数组 `['A1','A2','B1','B2']` 和数组 `['A','B']` 合并排序为 `['A1','A2','A','B1','B2','B']`。
 
 ```js

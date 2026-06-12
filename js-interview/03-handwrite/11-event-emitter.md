@@ -1,5 +1,7 @@
 ## Event Emit 实现（事件中心，参考 Vue 源码）
 
+> **English**: Event Emitter — Implementing a publish-subscribe pattern with `on`, `emit`, `off`, and `once` methods.
+
 ### vm.$on
 
 ```js

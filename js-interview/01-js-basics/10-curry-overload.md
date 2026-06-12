@@ -1,3 +1,7 @@
+# 柯里化与函数重载
+
+> **English**: Currying & Overloading — Using closures for argument reuse and simulating function overloading in JavaScript.
+
 ## 理解柯里化之前我们先来回顾下 bind 的实现
 
 ```js

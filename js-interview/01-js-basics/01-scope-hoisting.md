@@ -1,3 +1,7 @@
+# 作用域与变量提升
+
+> **English**: Scope & Hoisting — Understanding scope chain, variable hoisting, function hoisting, and execution context in JavaScript.
+
 ## 作用域
 
 当函数执行的时候（执行前一刻），会创建一个执行期的上下文（AO）。全局预编译的时候会创建一个 GO。
